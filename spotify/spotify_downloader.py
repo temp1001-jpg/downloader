@@ -421,6 +421,12 @@ class SpotifyDownloader:
             opts['outtmpl'] = output_template
 
             yt_dlp = lazy_import_ytdlp()
+            # Attach cookies for restricted videos if available
+            try:
+                if getattr(self, 'cookie_file', None) and Path(self.cookie_file).exists():
+                    opts['cookiefile'] = str(self.cookie_file)
+            except Exception:
+                pass
             with yt_dlp.YoutubeDL(opts) as ydl:
                 ydl.download([youtube_url])
 
