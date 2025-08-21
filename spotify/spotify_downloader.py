@@ -351,12 +351,20 @@ class SpotifyDownloader:
 
             for search_query in search_variations:
                 try:
-                    with yt_dlp.YoutubeDL({
+                    opts = {
                         'quiet': True,
                         'no_warnings': True,
                         'extract_flat': False,
                         'default_search': 'ytsearch3:'  # Get top 3 results for better matching
-                    }) as ydl:
+                    }
+                    # Attach cookies if available
+                    try:
+                        from pathlib import Path as _Path
+                        if getattr(self, 'cookie_file', None) and _Path(self.cookie_file).exists():
+                            opts['cookiefile'] = str(self.cookie_file)
+                    except Exception:
+                        pass
+                    with yt_dlp.YoutubeDL(opts) as ydl:
                         info = ydl.extract_info(f"ytsearch3:{search_query}", download=False)
 
                         if info and 'entries' in info and info['entries']:
