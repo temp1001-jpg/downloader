@@ -16,6 +16,10 @@ pyinstaller ^
   --windowed ^
   --name "UniversalMediaDownloader" ^
   --add-data "..\youtube\cookies.txt;youtube" ^
+  --add-data "..\spotify\spotify_downloader.py;spotify" ^
+  --add-data "..\spotify\.env;spotify" ^
+  --add-data "..\instagram\instagram_downloader.py;instagram" ^
+  --add-data "..\soundcloud\soundcloud_downloader.py;soundcloud" ^
   ..\gui\main.py
 
 ECHO.
