@@ -321,6 +321,14 @@ class SpotifyDownloader:
                 'preferredquality': '320' if self.audio_quality == 'high' else '192',
             }]
         }
+        # Try to load cookies by default if present
+        try:
+            from pathlib import Path as _Path
+            default_cookie = _Path(__file__).parent.parent / 'youtube' / 'cookies.txt'
+            if default_cookie.exists():
+                self.cookie_file = default_cookie
+        except Exception:
+            pass
     
     def validate_spotify_url(self, url: str) -> Tuple[str, str]:
         """Validate Spotify URL and extract type and ID."""
