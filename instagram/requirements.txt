@@ -1,0 +1,18 @@
+# Instagram Video Downloader - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core dependency for video/audio downloading from Instagram and other platforms
+yt-dlp>=2023.12.30
+
+# Optional but recommended: Ensures compatibility with various video formats
+# and provides better error handling for network requests
+requests>=2.31.0
+
+# Optional: For better JSON handling (though built-in json module is sufficient)
+# Uncomment if you want enhanced JSON processing capabilities
+# ujson>=5.8.0
+
+# Development dependencies (uncomment if needed for development/testing)
+# pytest>=7.4.0
+# black>=23.0.0
+# flake8>=6.0.0
