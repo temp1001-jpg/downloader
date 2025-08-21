@@ -140,6 +140,12 @@ class SpotifyDownloader:
         self.completed_tracks = set()  # Track completed downloads for resume capability
 
         # Initialize HTTP session for connection pooling
+        # Cookie file path used by yt-dlp (shared with YouTube module by default)
+        self.cookie_file = Path(__file__).parent.parent / 'youtube' / 'cookies.txt'
+        if not self.cookie_file.exists():
+            # Fallback to local path
+            self.cookie_file = Path('cookies.txt')
+
         self.session = None  # Lazy initialize when needed
     
     def load_config(self) -> Dict:
