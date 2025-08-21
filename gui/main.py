@@ -24,7 +24,11 @@ from PySide6 import QtCore, QtGui, QtWidgets
 # -------------------------
 # Utilities & Settings
 # -------------------------
-APP_ROOT = Path(__file__).resolve().parent.parent
+# Resolve root for both normal run and PyInstaller onefile
+if hasattr(sys, "_MEIPASS"):
+    APP_ROOT = Path(sys._MEIPASS)
+else:
+    APP_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_COOKIES = APP_ROOT / "youtube" / "cookies.txt"
 SPOTIFY_ENV = APP_ROOT / "spotify" / ".env"
 CONFIG_PATH = APP_ROOT / "app_settings.json"
