@@ -1,0 +1,5 @@
+spotipy>=2.22.1
+yt-dlp>=2023.12.30
+mutagen>=1.47.0
+requests>=2.31.0
+tqdm>=4.66.0
