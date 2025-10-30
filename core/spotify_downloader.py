@@ -9,6 +9,20 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Callable
 
+
+def load_env_file(env_path):
+    """Load environment variables from .env file"""
+    if Path(env_path).exists():
+        try:
+            with open(env_path, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        os.environ[key.strip()] = value.strip()
+        except Exception as e:
+            print(f"Warning: Could not load .env file: {e}")
+
 try:
     import spotipy
     from spotipy.oauth2 import SpotifyClientCredentials
@@ -41,6 +55,18 @@ class SpotifyDownloader:
         self.output_dir.mkdir(exist_ok=True)
         self.audio_format = audio_format
         self.audio_quality = audio_quality
+
+        # Try to load from spotify/.env file first
+        env_paths = [
+            Path('spotify/.env'),
+            Path('.env'),
+            Path(__file__).parent.parent / 'spotify' / '.env'
+        ]
+        for env_path in env_paths:
+            if env_path.exists():
+                load_env_file(env_path)
+                print(f"Loaded Spotify credentials from {env_path}")
+                break
 
         # Load credentials from environment if not provided
         if not client_id:
