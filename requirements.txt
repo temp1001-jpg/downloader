@@ -1,0 +1,20 @@
+# All-in-One Media Downloader - Consolidated Dependencies
+
+# GUI Framework
+customtkinter>=5.0.0
+
+# Browser Cookie Extraction
+browser-cookie3>=0.19.0
+
+# YouTube Downloader
+yt-dlp>=2023.12.30
+tqdm>=4.65.0
+colorama>=0.4.6
+pyperclip>=1.8.2
+
+# Spotify Downloader
+spotipy>=2.22.1
+mutagen>=1.47.0
+
+# Common
+requests>=2.31.0
