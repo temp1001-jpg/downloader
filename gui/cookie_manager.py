@@ -3,6 +3,7 @@
 import browser_cookie3
 import tempfile
 import os
+from pathlib import Path
 from typing import Optional, Dict
 from http.cookiejar import Cookie
 
