@@ -179,10 +179,41 @@ class YouTubePanel(ctk.CTkFrame):
             def progress_callback(d):
                 if d['status'] == 'downloading':
                     if 'total_bytes' in d and d['total_bytes']:
-                        progress = d['downloaded_bytes'] / d['total_bytes']
-                        self.after(0, lambda: self.progress_bar.set(progress))
+                        downloaded = d['downloaded_bytes']
+                        total = d['total_bytes']
+                        progress = downloaded / total
+                        percent = progress * 100
+
+                        # Get speed and ETA
+                        speed = d.get('speed', 0)
+                        eta = d.get('eta', 0)
+
+                        # Format speed
+                        if speed:
+                            speed_mb = speed / (1024 * 1024)
+                            speed_str = f"{speed_mb:.2f} MB/s"
+                        else:
+                            speed_str = "Calculating..."
+
+                        # Format ETA
+                        if eta:
+                            eta_mins = eta // 60
+                            eta_secs = eta % 60
+                            eta_str = f"{int(eta_mins)}m {int(eta_secs)}s"
+                        else:
+                            eta_str = "Calculating..."
+
+                        # Update UI
+                        status_msg = f"Downloading: {percent:.1f}% | Speed: {speed_str} | ETA: {eta_str}"
+                        self.after(0, lambda p=progress, m=status_msg: (
+                            self.progress_bar.set(p),
+                            self.update_status(m)
+                        ))
                 elif d['status'] == 'finished':
-                    self.after(0, lambda: self.progress_bar.set(1.0))
+                    self.after(0, lambda: (
+                        self.progress_bar.set(1.0),
+                        self.update_status("Processing...")
+                    ))
 
             success = self.downloader.download(
                 url,
