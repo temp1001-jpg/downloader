@@ -104,11 +104,22 @@ class SoundCloudDownloader:
             'http_chunk_size': 10485760,
             'retries': 3,
             'socket_timeout': 15,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': self.audio_format,
-                'preferredquality': quality,
-            }],
+            'writethumbnail': True,
+            'postprocessors': [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': self.audio_format,
+                    'preferredquality': quality,
+                },
+                {
+                    'key': 'FFmpegMetadata',
+                    'add_metadata': True,
+                },
+                {
+                    'key': 'EmbedThumbnail',
+                    'already_have_thumbnail': False,
+                },
+            ],
         }
 
         # Add progress hook if callback provided
