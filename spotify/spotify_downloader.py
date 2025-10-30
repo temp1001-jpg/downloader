@@ -140,12 +140,6 @@ class SpotifyDownloader:
         self.completed_tracks = set()  # Track completed downloads for resume capability
 
         # Initialize HTTP session for connection pooling
-        # Cookie file path used by yt-dlp (shared with YouTube module by default)
-        self.cookie_file = Path(__file__).parent.parent / 'youtube' / 'cookies.txt'
-        if not self.cookie_file.exists():
-            # Fallback to local path
-            self.cookie_file = Path('cookies.txt')
-
         self.session = None  # Lazy initialize when needed
     
     def load_config(self) -> Dict:
@@ -321,14 +315,6 @@ class SpotifyDownloader:
                 'preferredquality': '320' if self.audio_quality == 'high' else '192',
             }]
         }
-        # Try to load cookies by default if present
-        try:
-            from pathlib import Path as _Path
-            default_cookie = _Path(__file__).parent.parent / 'youtube' / 'cookies.txt'
-            if default_cookie.exists():
-                self.cookie_file = default_cookie
-        except Exception:
-            pass
     
     def validate_spotify_url(self, url: str) -> Tuple[str, str]:
         """Validate Spotify URL and extract type and ID."""
@@ -365,20 +351,12 @@ class SpotifyDownloader:
 
             for search_query in search_variations:
                 try:
-                    opts = {
+                    with yt_dlp.YoutubeDL({
                         'quiet': True,
                         'no_warnings': True,
                         'extract_flat': False,
                         'default_search': 'ytsearch3:'  # Get top 3 results for better matching
-                    }
-                    # Attach cookies if available
-                    try:
-                        from pathlib import Path as _Path
-                        if getattr(self, 'cookie_file', None) and _Path(self.cookie_file).exists():
-                            opts['cookiefile'] = str(self.cookie_file)
-                    except Exception:
-                        pass
-                    with yt_dlp.YoutubeDL(opts) as ydl:
+                    }) as ydl:
                         info = ydl.extract_info(f"ytsearch3:{search_query}", download=False)
 
                         if info and 'entries' in info and info['entries']:
@@ -429,12 +407,6 @@ class SpotifyDownloader:
             opts['outtmpl'] = output_template
 
             yt_dlp = lazy_import_ytdlp()
-            # Attach cookies for restricted videos if available
-            try:
-                if getattr(self, 'cookie_file', None) and Path(self.cookie_file).exists():
-                    opts['cookiefile'] = str(self.cookie_file)
-            except Exception:
-                pass
             with yt_dlp.YoutubeDL(opts) as ydl:
                 ydl.download([youtube_url])
 
