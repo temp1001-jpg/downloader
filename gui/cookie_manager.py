@@ -33,8 +33,12 @@ class CookieManager:
             self.cookie_jar = browser_cookie3.load()
             self._organize_cookies()
             return
-        except Exception as e:
-            print(f"Warning: Could not load cookies from all browsers: {e}")
+        except (PermissionError, OSError):
+            # Browser is locked or permission denied - this is normal, try individual browsers
+            pass
+        except Exception:
+            # Other errors - silently continue to fallback
+            pass
 
         # Fallback: Try individual browsers
         browsers = [
@@ -55,13 +59,16 @@ class CookieManager:
                 if jar:
                     self.cookie_jar = jar
                     self._organize_cookies()
-                    print(f"Successfully loaded cookies from {browser_name}")
+                    # Silently succeed - cookies loaded
                     return
-            except Exception as e:
-                # Silently try next browser
+            except (PermissionError, OSError):
+                # Browser locked or permission denied - try next
+                continue
+            except Exception:
+                # Other errors - try next browser
                 continue
 
-        print("Warning: Could not load cookies from any browser")
+        # No cookies loaded - not critical, app will work for public content
 
     def _organize_cookies(self):
         """Organize cookies by domain for quick access"""
