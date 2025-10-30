@@ -42,20 +42,58 @@ class MainWindow(ctk.CTk):
 
         # Create layout
         self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
 
-        # Create sidebar
-        self.sidebar = ctk.CTkFrame(self, width=180, corner_radius=0)
-        self.sidebar.grid(row=0, column=0, sticky="nsew")
-        self.sidebar.grid_rowconfigure(10, weight=1)  # Push buttons to top
+        # ===== HEADER =====
+        header_frame = ctk.CTkFrame(self, height=70, corner_radius=0, fg_color=("#2F9E9C", "#1A5F5E"))
+        header_frame.grid(row=0, column=0, columnspan=2, sticky="ew")
+        header_frame.grid_propagate(False)
+
+        # Header left side - Logo and title
+        header_left = ctk.CTkFrame(header_frame, fg_color="transparent")
+        header_left.pack(side="left", padx=20, pady=15)
+
+        logo_label = ctk.CTkLabel(
+            header_left,
+            text="🎵 Blify",
+            font=ctk.CTkFont(size=24, weight="bold"),
+            text_color="white"
+        )
+        logo_label.pack(side="left")
+
+        subtitle_label = ctk.CTkLabel(
+            header_left,
+            text=" | Media Downloader Evolution",
+            font=ctk.CTkFont(size=14),
+            text_color=("#E0E0E0", "#B0B0B0")
+        )
+        subtitle_label.pack(side="left", padx=(5, 0))
+
+        # Header right side - User info
+        header_right = ctk.CTkFrame(header_frame, fg_color="transparent")
+        header_right.pack(side="right", padx=20, pady=15)
+
+        user_info_label = ctk.CTkLabel(
+            header_right,
+            text="Hello, User",
+            font=ctk.CTkFont(size=14),
+            text_color="white"
+        )
+        user_info_label.pack(side="left", padx=10)
+
+        # ===== SIDEBAR =====
+        self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0, fg_color=("#34D399", "#2AA97D"))
+        self.sidebar.grid(row=1, column=0, sticky="nsew")
+        self.sidebar.grid_rowconfigure(10, weight=1)
 
         # Sidebar title
         self.sidebar_title = ctk.CTkLabel(
             self.sidebar,
-            text="Platforms",
-            font=ctk.CTkFont(size=16, weight="bold")
+            text="📥 Platforms",
+            font=ctk.CTkFont(size=18, weight="bold"),
+            text_color="white"
         )
-        self.sidebar_title.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.sidebar_title.grid(row=0, column=0, padx=20, pady=(25, 15))
 
         # Platform buttons
         self.youtube_btn = ctk.CTkButton(
