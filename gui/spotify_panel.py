@@ -30,9 +30,6 @@ class SpotifyPanel(ctk.CTkFrame):
         )
         header.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
 
-        # Check for credentials
-        self.check_credentials()
-
         # URL input
         url_label = ctk.CTkLabel(self, text="Spotify URL:")
         url_label.grid(row=1, column=0, padx=20, pady=(10, 5), sticky="w")
@@ -91,6 +88,9 @@ class SpotifyPanel(ctk.CTkFrame):
         self.info_text = ctk.CTkTextbox(self, height=200)
         self.info_text.grid(row=10, column=0, padx=20, pady=(5, 20), sticky="nsew")
         self.grid_rowconfigure(10, weight=1)
+
+        # Check for credentials (after all widgets are created)
+        self.check_credentials()
 
     def check_credentials(self):
         """Check if Spotify API credentials are available"""
