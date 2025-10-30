@@ -193,11 +193,22 @@ class YouTubeDownloader:
         # Format selection
         if audio_only:
             ydl_opts['format'] = 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio/best'
-            ydl_opts['postprocessors'] = [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '320',
-            }]
+            ydl_opts['postprocessors'] = [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '320',
+                },
+                {
+                    'key': 'FFmpegMetadata',
+                    'add_metadata': True,
+                },
+                {
+                    'key': 'EmbedThumbnail',
+                    'already_have_thumbnail': False,
+                },
+            ]
+            ydl_opts['writethumbnail'] = True
         else:
             if quality.lower() == "best":
                 ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
@@ -214,5 +225,18 @@ class YouTubeDownloader:
                     f'best[height<={height}]/'
                     f'best'
                 )
+
+            # Add metadata and thumbnail for video mode too
+            ydl_opts['writethumbnail'] = True
+            ydl_opts['postprocessors'] = [
+                {
+                    'key': 'FFmpegMetadata',
+                    'add_metadata': True,
+                },
+                {
+                    'key': 'EmbedThumbnail',
+                    'already_have_thumbnail': False,
+                },
+            ]
 
         return ydl_opts
