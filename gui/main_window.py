@@ -91,14 +91,6 @@ class MainWindow(ctk.CTk):
         )
         self.settings_btn.grid(row=6, column=0, padx=20, pady=8)
 
-        # Refresh Cookies button
-        self.refresh_cookies_btn = ctk.CTkButton(
-            self.sidebar,
-            text="Refresh Cookies",
-            command=self.refresh_cookies
-        )
-        self.refresh_cookies_btn.grid(row=7, column=0, padx=20, pady=8)
-
         # Content area
         self.content_frame = ctk.CTkFrame(self, corner_radius=0)
         self.content_frame.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
