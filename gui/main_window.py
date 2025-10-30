@@ -152,9 +152,9 @@ class MainWindow(ctk.CTk):
         )
         self.settings_btn.grid(row=6, column=0, padx=20, pady=10)
 
-        # Content area
-        self.content_frame = ctk.CTkFrame(self, corner_radius=0)
-        self.content_frame.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
+        # Content area with modern background
+        self.content_frame = ctk.CTkFrame(self, corner_radius=0, fg_color=("#F0F9F9", "#1A1A1A"))
+        self.content_frame.grid(row=1, column=1, sticky="nsew", padx=0, pady=0)
         self.content_frame.grid_rowconfigure(0, weight=1)
         self.content_frame.grid_columnconfigure(0, weight=1)
 
