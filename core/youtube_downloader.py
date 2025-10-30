@@ -93,16 +93,20 @@ class YouTubeDownloader:
             'no_warnings': True,
             'extract_flat': False,
             'skip_download': True,
-            'socket_timeout': 30,
-            'retries': 3,
+            'socket_timeout': 60,
+            'retries': 5,
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate',
             },
         }
 
         # Add cookies if available
         if self.cookies_file and Path(self.cookies_file).exists():
             ydl_opts['cookiefile'] = str(Path(self.cookies_file).absolute())
+            print(f"Using cookies from: {self.cookies_file}")
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -162,16 +166,19 @@ class YouTubeDownloader:
 
         ydl_opts = {
             'outtmpl': outtmpl,
-            'retries': 3,
+            'retries': 5,
             'quiet': not self.verbose,
             'no_warnings': not self.verbose,
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate',
             },
-            'concurrent_fragment_downloads': 8,
-            'http_chunk_size': 16777216,
-            'fragment_retries': 3,
-            'socket_timeout': 30,
+            'concurrent_fragment_downloads': 4,
+            'http_chunk_size': 10485760,
+            'fragment_retries': 5,
+            'socket_timeout': 60,
         }
 
         # Add progress hook if callback provided
@@ -181,6 +188,7 @@ class YouTubeDownloader:
         # Add cookies if available
         if self.cookies_file and Path(self.cookies_file).exists():
             ydl_opts['cookiefile'] = str(Path(self.cookies_file).absolute())
+            print(f"Using cookies for download: {self.cookies_file}")
 
         # Format selection
         if audio_only:
