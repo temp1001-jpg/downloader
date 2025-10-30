@@ -219,14 +219,24 @@ class SettingsDialog(ctk.CTkToplevel):
 
     def create_widgets(self):
         """Create settings widgets"""
-        # Download Directory
-        dir_label = ctk.CTkLabel(self, text="Download Directory:")
-        dir_label.pack(pady=(20, 5), padx=20, anchor="w")
+        parent = self.scrollable_frame
 
-        dir_frame = ctk.CTkFrame(self)
+        # ===== GENERAL SETTINGS =====
+        general_header = ctk.CTkLabel(
+            parent,
+            text="⚙️ General Settings",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        general_header.pack(pady=(10, 10), padx=20, anchor="w")
+
+        # Download Directory
+        dir_label = ctk.CTkLabel(parent, text="Download Directory:")
+        dir_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        dir_frame = ctk.CTkFrame(parent)
         dir_frame.pack(pady=5, padx=20, fill="x")
 
-        self.dir_entry = ctk.CTkEntry(dir_frame, width=350)
+        self.dir_entry = ctk.CTkEntry(dir_frame, width=450)
         self.dir_entry.insert(0, self.config.get("download_directory", "./downloads"))
         self.dir_entry.pack(side="left", padx=5, pady=5)
 
@@ -234,37 +244,131 @@ class SettingsDialog(ctk.CTkToplevel):
         browse_btn.pack(side="left", padx=5, pady=5)
 
         # Theme
-        theme_label = ctk.CTkLabel(self, text="Theme:")
-        theme_label.pack(pady=(20, 5), padx=20, anchor="w")
+        theme_label = ctk.CTkLabel(parent, text="Theme:")
+        theme_label.pack(pady=(15, 5), padx=20, anchor="w")
 
         self.theme_var = ctk.StringVar(value=self.config.get("theme", "dark"))
         theme_menu = ctk.CTkOptionMenu(
-            self,
+            parent,
             values=["dark", "light"],
-            variable=self.theme_var
+            variable=self.theme_var,
+            width=200
         )
         theme_menu.pack(pady=5, padx=20, anchor="w")
 
         # Theme change warning
         theme_warning = ctk.CTkLabel(
-            self,
-            text="Note: Restart app after saving to apply theme",
+            parent,
+            text="⚠️ Restart app after saving to apply theme",
             font=ctk.CTkFont(size=11),
-            text_color="gray"
+            text_color="orange"
         )
         theme_warning.pack(pady=5, padx=20, anchor="w")
 
+        # Separator
+        ctk.CTkFrame(parent, height=2).pack(pady=20, padx=20, fill="x")
+
+        # ===== SPOTIFY CREDENTIALS =====
+        spotify_header = ctk.CTkLabel(
+            parent,
+            text="🎵 Spotify API Credentials",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        spotify_header.pack(pady=(10, 5), padx=20, anchor="w")
+
+        # Instructions
+        spotify_instructions = ctk.CTkLabel(
+            parent,
+            text="1. Go to https://developer.spotify.com/dashboard\n"
+                 "2. Create an app (or use existing one)\n"
+                 "3. Copy your Client ID and Client Secret\n"
+                 "4. Paste them below:",
+            font=ctk.CTkFont(size=11),
+            text_color="gray",
+            justify="left"
+        )
+        spotify_instructions.pack(pady=5, padx=20, anchor="w")
+
+        # Spotify Client ID
+        client_id_label = ctk.CTkLabel(parent, text="Spotify Client ID:")
+        client_id_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        self.spotify_client_id_entry = ctk.CTkEntry(parent, width=550, placeholder_text="Enter your Spotify Client ID")
+        self.spotify_client_id_entry.insert(0, self.config.get("spotify_client_id", ""))
+        self.spotify_client_id_entry.pack(pady=5, padx=20, anchor="w")
+
+        # Spotify Client Secret
+        client_secret_label = ctk.CTkLabel(parent, text="Spotify Client Secret:")
+        client_secret_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        self.spotify_client_secret_entry = ctk.CTkEntry(parent, width=550, placeholder_text="Enter your Spotify Client Secret", show="*")
+        self.spotify_client_secret_entry.insert(0, self.config.get("spotify_client_secret", ""))
+        self.spotify_client_secret_entry.pack(pady=5, padx=20, anchor="w")
+
+        # Separator
+        ctk.CTkFrame(parent, height=2).pack(pady=20, padx=20, fill="x")
+
+        # ===== COOKIES CONFIGURATION =====
+        cookies_header = ctk.CTkLabel(
+            parent,
+            text="🍪 Cookies Configuration",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        cookies_header.pack(pady=(10, 5), padx=20, anchor="w")
+
+        # Instructions
+        cookies_instructions = ctk.CTkLabel(
+            parent,
+            text="For age-restricted or private content, you need browser cookies:\n\n"
+                 "Option 1: Automatic (Recommended)\n"
+                 "  - Close all browsers completely\n"
+                 "  - Open this app - it will auto-detect cookies\n\n"
+                 "Option 2: Manual (If automatic fails)\n"
+                 "  1. Install browser extension: 'Get cookies.txt LOCALLY'\n"
+                 "  2. Go to youtube.com, instagram.com, or soundcloud.com\n"
+                 "  3. Click extension and export cookies\n"
+                 "  4. Save as 'cookies.txt' in app folder or enter path below:",
+            font=ctk.CTkFont(size=11),
+            text_color="gray",
+            justify="left"
+        )
+        cookies_instructions.pack(pady=5, padx=20, anchor="w")
+
+        # Cookies file path
+        cookies_label = ctk.CTkLabel(parent, text="Cookies File Path (optional):")
+        cookies_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        cookies_frame = ctk.CTkFrame(parent)
+        cookies_frame.pack(pady=5, padx=20, fill="x")
+
+        self.cookies_entry = ctk.CTkEntry(cookies_frame, width=450, placeholder_text="cookies.txt")
+        self.cookies_entry.insert(0, self.config.get("cookies_file", ""))
+        self.cookies_entry.pack(side="left", padx=5, pady=5)
+
+        browse_cookies_btn = ctk.CTkButton(cookies_frame, text="Browse", width=80, command=self.browse_cookies)
+        browse_cookies_btn.pack(side="left", padx=5, pady=5)
+
+        # Cookie status
+        cookie_status = "✓ Cookies loaded" if self.cookie_manager.has_cookies() else "⚠️ No cookies detected"
+        self.cookie_status_label = ctk.CTkLabel(
+            parent,
+            text=cookie_status,
+            font=ctk.CTkFont(size=11),
+            text_color="green" if self.cookie_manager.has_cookies() else "orange"
+        )
+        self.cookie_status_label.pack(pady=5, padx=20, anchor="w")
+
         # Spacer
-        ctk.CTkLabel(self, text="").pack(pady=20)
+        ctk.CTkLabel(parent, text="").pack(pady=20)
 
-        # Buttons
+        # ===== BUTTONS =====
         btn_frame = ctk.CTkFrame(self)
-        btn_frame.pack(pady=20, side="bottom")
+        btn_frame.pack(pady=10, side="bottom")
 
-        save_btn = ctk.CTkButton(btn_frame, text="Save", command=self.save_settings, width=100)
+        save_btn = ctk.CTkButton(btn_frame, text="Save Settings", command=self.save_settings, width=120)
         save_btn.pack(side="left", padx=10)
 
-        cancel_btn = ctk.CTkButton(btn_frame, text="Cancel", command=self.destroy, width=100)
+        cancel_btn = ctk.CTkButton(btn_frame, text="Cancel", command=self.destroy, width=120)
         cancel_btn.pack(side="left", padx=10)
 
     def browse_directory(self):
