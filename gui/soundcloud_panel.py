@@ -148,8 +148,8 @@ class SoundCloudPanel(ctk.CTkFrame):
                 info_text += f"Artist: {info.get('uploader', 'Unknown')}\n"
                 duration = info.get('duration')
                 if duration:
-                    minutes, seconds = divmod(duration, 60)
-                    info_text += f"Duration: {minutes:02d}:{seconds:02d}\n"
+                    minutes, seconds = divmod(int(duration), 60)
+                    info_text += f"Duration: {int(minutes):02d}:{int(seconds):02d}\n"
 
                 self.after(0, lambda: self.info_text.insert("end", info_text + "\n"))
 
