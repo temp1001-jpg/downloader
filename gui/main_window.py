@@ -782,7 +782,6 @@ class MainWindow(ctk.CTk):
 
     def open_settings(self):
         """Open settings dialog"""
-        from .main_window import SettingsDialog
         dialog = SettingsDialog(self, self.config, self.cookie_manager)
         dialog.wait_window()
         self.save_config()
