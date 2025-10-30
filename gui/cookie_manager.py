@@ -28,47 +28,39 @@ class CookieManager:
         self.cookies = {}
         self.cookie_jar = None
 
-        try:
-            # Try loading from all browsers at once
-            self.cookie_jar = browser_cookie3.load()
-            self._organize_cookies()
-            return
-        except (PermissionError, OSError):
-            # Browser is locked or permission denied - this is normal, try individual browsers
-            pass
-        except Exception:
-            # Other errors - silently continue to fallback
-            pass
-
-        # Fallback: Try individual browsers
+        # Try each browser individually for better success rate
         browsers = [
             ('Chrome', browser_cookie3.chrome),
-            ('Firefox', browser_cookie3.firefox),
-            ('Edge', browser_cookie3.edge),
-            ('Safari', browser_cookie3.safari),
-            ('Brave', browser_cookie3.brave),
-            ('Opera', browser_cookie3.opera),
             ('Opera GX', browser_cookie3.opera_gx),
+            ('Opera', browser_cookie3.opera),
+            ('Edge', browser_cookie3.edge),
+            ('Brave', browser_cookie3.brave),
+            ('Firefox', browser_cookie3.firefox),
             ('Vivaldi', browser_cookie3.vivaldi),
             ('Chromium', browser_cookie3.chromium),
+            ('Safari', browser_cookie3.safari),
         ]
 
         for browser_name, browser_func in browsers:
             try:
+                print(f"Trying to load cookies from {browser_name}...")
                 jar = browser_func()
-                if jar:
+                if jar and list(jar):  # Check if jar has cookies
                     self.cookie_jar = jar
                     self._organize_cookies()
-                    # Silently succeed - cookies loaded
+                    print(f"✓ Successfully loaded {len(list(jar))} cookies from {browser_name}")
                     return
-            except (PermissionError, OSError):
-                # Browser locked or permission denied - try next
+            except (PermissionError, OSError) as e:
+                print(f"  {browser_name}: Permission denied (browser may be running)")
                 continue
-            except Exception:
-                # Other errors - try next browser
+            except AttributeError:
+                # Browser not installed
+                continue
+            except Exception as e:
+                print(f"  {browser_name}: {type(e).__name__}")
                 continue
 
-        # No cookies loaded - not critical, app will work for public content
+        print("Note: No cookies loaded. Public content will still work.")
 
     def _organize_cookies(self):
         """Organize cookies by domain for quick access"""
