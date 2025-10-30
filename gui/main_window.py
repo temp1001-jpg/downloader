@@ -27,6 +27,9 @@ class MainWindow(ctk.CTk):
         # Load configuration
         self.config = self.load_config()
 
+        # Apply saved theme
+        ctk.set_appearance_mode(self.config.get("theme", "dark"))
+
         # Initialize cookie manager
         self.cookie_manager = CookieManager()
 
@@ -142,7 +145,7 @@ class MainWindow(ctk.CTk):
 
     def load_config(self):
         """Load configuration from file"""
-        config_file = Path("downloader/config.json")
+        config_file = Path("config.json")
         default_config = {
             "download_directory": "./downloads",
             "theme": "dark",
@@ -165,11 +168,11 @@ class MainWindow(ctk.CTk):
 
     def save_config(self):
         """Save configuration to file"""
-        config_file = Path("downloader/config.json")
+        config_file = Path("config.json")
         try:
-            config_file.parent.mkdir(exist_ok=True)
             with open(config_file, 'w') as f:
                 json.dump(self.config, f, indent=2)
+                print(f"Settings saved to {config_file.absolute()}")
         except Exception as e:
             print(f"Warning: Could not save config: {e}")
 
