@@ -86,11 +86,22 @@ class InstagramDownloader:
         # Setup format based on mode
         if audio_only:
             ydl_opts['format'] = 'bestaudio/best'
-            ydl_opts['postprocessors'] = [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': self.audio_format,
-                'preferredquality': self.audio_quality,
-            }]
+            ydl_opts['writethumbnail'] = True
+            ydl_opts['postprocessors'] = [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': self.audio_format,
+                    'preferredquality': self.audio_quality,
+                },
+                {
+                    'key': 'FFmpegMetadata',
+                    'add_metadata': True,
+                },
+                {
+                    'key': 'EmbedThumbnail',
+                    'already_have_thumbnail': False,
+                },
+            ]
         else:
             # Video mode
             if self.quality == "best":
@@ -103,6 +114,19 @@ class InstagramDownloader:
                 ydl_opts['format'] = 'best[height<=480]'
             else:
                 ydl_opts['format'] = 'best'
+
+            # Add metadata and thumbnail for video mode too
+            ydl_opts['writethumbnail'] = True
+            ydl_opts['postprocessors'] = [
+                {
+                    'key': 'FFmpegMetadata',
+                    'add_metadata': True,
+                },
+                {
+                    'key': 'EmbedThumbnail',
+                    'already_have_thumbnail': False,
+                },
+            ]
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
