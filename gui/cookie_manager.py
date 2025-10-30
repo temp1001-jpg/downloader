@@ -13,6 +13,13 @@ class CookieManager:
     def __init__(self):
         self.cookies = {}  # Cached cookies by domain
         self.cookie_jar = None  # Full cookie jar
+
+        # Check for manual cookies.txt file first
+        if self.load_manual_cookies():
+            print("✓ Using manual cookies.txt file")
+            return
+
+        # Otherwise try automatic extraction
         self.load_cookies()
 
     def load_cookies(self, force_refresh=False):
@@ -82,6 +89,31 @@ class CookieManager:
         print("   - Age-restricted: ✗ Won't work")
         print("   - Private videos: ✗ Won't work")
         print("="*60 + "\n")
+
+    def load_manual_cookies(self):
+        """Load cookies from manual cookies.txt file if it exists"""
+        from http.cookiejar import MozillaCookieJar
+
+        # Check common locations
+        cookie_paths = [
+            Path('cookies.txt'),
+            Path('youtube/cookies.txt'),
+        ]
+
+        for cookie_path in cookie_paths:
+            if cookie_path.exists():
+                try:
+                    jar = MozillaCookieJar(str(cookie_path))
+                    jar.load(ignore_discard=True, ignore_expires=True)
+                    if list(jar):
+                        self.cookie_jar = jar
+                        self._organize_cookies()
+                        print(f"✓ Loaded cookies from manual file: {cookie_path}")
+                        return True
+                except Exception as e:
+                    print(f"Warning: Could not load {cookie_path}: {e}")
+
+        return False
 
     def _organize_cookies(self):
         """Organize cookies by domain for quick access"""
