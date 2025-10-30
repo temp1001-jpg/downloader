@@ -56,17 +56,13 @@ class SpotifyDownloader:
         self.audio_format = audio_format
         self.audio_quality = audio_quality
 
-        # Try to load from spotify/.env file first
-        env_paths = [
-            Path('spotify/.env'),
-            Path('.env'),
-            Path(__file__).parent.parent / 'spotify' / '.env'
-        ]
-        for env_path in env_paths:
-            if env_path.exists():
-                load_env_file(env_path)
-                print(f"Loaded Spotify credentials from {env_path}")
-                break
+        # Hardcoded path to spotify/.env file
+        spotify_env_path = Path(__file__).parent.parent / 'spotify' / '.env'
+        if spotify_env_path.exists():
+            load_env_file(spotify_env_path)
+            print(f"✓ Loaded Spotify credentials from {spotify_env_path}")
+        else:
+            print(f"Warning: spotify/.env not found at {spotify_env_path}")
 
         # Load credentials from environment if not provided
         if not client_id:
