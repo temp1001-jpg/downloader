@@ -262,6 +262,10 @@ class SpotifyDownloader:
                 ]
             }
 
+            # Add cookies if available
+            if self.cookies_file and Path(self.cookies_file).exists():
+                ydl_opts['cookiefile'] = str(Path(self.cookies_file).absolute())
+
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([youtube_url])
 
