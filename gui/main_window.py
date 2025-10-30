@@ -95,46 +95,62 @@ class MainWindow(ctk.CTk):
         )
         self.sidebar_title.grid(row=0, column=0, padx=20, pady=(25, 15))
 
-        # Platform buttons
+        # Platform buttons with modern styling
+        btn_style = {
+            "width": 160,
+            "height": 45,
+            "corner_radius": 10,
+            "fg_color": ("#FFFFFF", "#2A2A2A"),
+            "hover_color": ("#E6F7F5", "#3A3A3A"),
+            "text_color": ("#2F9E9C", "#34D399"),
+            "font": ctk.CTkFont(size=14, weight="bold"),
+            "anchor": "w"
+        }
+
         self.youtube_btn = ctk.CTkButton(
             self.sidebar,
-            text="YouTube",
-            command=lambda: self.show_panel("youtube")
+            text="  📺  YouTube",
+            command=lambda: self.show_panel("youtube"),
+            **btn_style
         )
-        self.youtube_btn.grid(row=1, column=0, padx=20, pady=8)
+        self.youtube_btn.grid(row=1, column=0, padx=20, pady=10)
 
         self.spotify_btn = ctk.CTkButton(
             self.sidebar,
-            text="Spotify",
-            command=lambda: self.show_panel("spotify")
+            text="  🎵  Spotify",
+            command=lambda: self.show_panel("spotify"),
+            **btn_style
         )
-        self.spotify_btn.grid(row=2, column=0, padx=20, pady=8)
+        self.spotify_btn.grid(row=2, column=0, padx=20, pady=10)
 
         self.instagram_btn = ctk.CTkButton(
             self.sidebar,
-            text="Instagram",
-            command=lambda: self.show_panel("instagram")
+            text="  📸  Instagram",
+            command=lambda: self.show_panel("instagram"),
+            **btn_style
         )
-        self.instagram_btn.grid(row=3, column=0, padx=20, pady=8)
+        self.instagram_btn.grid(row=3, column=0, padx=20, pady=10)
 
         self.soundcloud_btn = ctk.CTkButton(
             self.sidebar,
-            text="SoundCloud",
-            command=lambda: self.show_panel("soundcloud")
+            text="  🎧  SoundCloud",
+            command=lambda: self.show_panel("soundcloud"),
+            **btn_style
         )
-        self.soundcloud_btn.grid(row=4, column=0, padx=20, pady=8)
+        self.soundcloud_btn.grid(row=4, column=0, padx=20, pady=10)
 
         # Separator
-        separator = ctk.CTkFrame(self.sidebar, height=2)
-        separator.grid(row=5, column=0, padx=20, pady=20, sticky="ew")
+        separator = ctk.CTkFrame(self.sidebar, height=2, fg_color=("#FFFFFF", "#2A2A2A"))
+        separator.grid(row=5, column=0, padx=20, pady=25, sticky="ew")
 
         # Settings button
         self.settings_btn = ctk.CTkButton(
             self.sidebar,
-            text="Settings",
-            command=self.open_settings
+            text="  ⚙️  Settings",
+            command=self.open_settings,
+            **btn_style
         )
-        self.settings_btn.grid(row=6, column=0, padx=20, pady=8)
+        self.settings_btn.grid(row=6, column=0, padx=20, pady=10)
 
         # Content area
         self.content_frame = ctk.CTkFrame(self, corner_radius=0)
