@@ -197,17 +197,22 @@ class MainWindow(ctk.CTk):
 class SettingsDialog(ctk.CTkToplevel):
     """Settings dialog window"""
 
-    def __init__(self, parent, config):
+    def __init__(self, parent, config, cookie_manager):
         super().__init__(parent)
 
         self.config = config
+        self.cookie_manager = cookie_manager
         self.title("Settings")
-        self.geometry("500x400")
+        self.geometry("650x700")
         self.resizable(False, False)
 
         # Make dialog modal
         self.transient(parent)
         self.grab_set()
+
+        # Create scrollable frame for settings
+        self.scrollable_frame = ctk.CTkScrollableFrame(self, width=600, height=650)
+        self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Create widgets
         self.create_widgets()
