@@ -697,15 +697,15 @@ class MainWindow(ctk.CTk):
             )
             label.pack(side="left", expand=True, padx=5)
 
-        # Table rows
+        # Table rows with proper color mapping
         rows_data = [
-            ("✓", "Confirmed", "Token XYZ", "⬆ Ethereum", "Sent 150 Units", "Success", "#10B981"),
-            ("⊙", "Pending", "Orbify NFT", "🔷 Tezos", "Created NFT #128", "Awaiting", "#F59E0B"),
-            ("✓", "Confirmed", "Token ABC", "⚫ Arbitrum", "Cast Governance Vote", "Success", "#10B981"),
-            ("✗", "Failed", "Token DEF", "🔺 Avalanche", "Updated Metadata", "Reverted", "#EF4444"),
+            ("✓", "Confirmed", "Token XYZ", "⬆ Ethereum", "Sent 150 Units", "Success", "#10B981", "#D1FAE5"),
+            ("⊙", "Pending", "Orbify NFT", "🔷 Tezos", "Created NFT #128", "Awaiting", "#F59E0B", "#FEF3C7"),
+            ("✓", "Confirmed", "Token ABC", "⚫ Arbitrum", "Cast Governance Vote", "Success", "#10B981", "#D1FAE5"),
+            ("✗", "Failed", "Token DEF", "🔺 Avalanche", "Updated Metadata", "Reverted", "#EF4444", "#FEE2E2"),
         ]
 
-        for status_icon, status_text, asset, network, action, result, color in rows_data:
+        for status_icon, status_text, asset, network, action, result, text_color, bg_color in rows_data:
             row = ctk.CTkFrame(log_card, fg_color="#F9FAFB", corner_radius=8, height=50)
             row.pack(fill="x", padx=25, pady=3)
 
@@ -748,13 +748,13 @@ class MainWindow(ctk.CTk):
             )
             action_label.pack(side="left", expand=True, padx=5)
 
-            # Result badge
+            # Result badge with proper colors
             result_badge = ctk.CTkLabel(
                 row,
                 text=result,
                 font=ctk.CTkFont(size=11, weight="bold"),
-                text_color=color,
-                fg_color=f"{color}15",  # Light version
+                text_color=text_color,
+                fg_color=bg_color,
                 corner_radius=12,
                 padx=12,
                 pady=6
