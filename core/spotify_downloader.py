@@ -242,11 +242,22 @@ class SpotifyDownloader:
                 'outtmpl': str(output_file.with_suffix('.%(ext)s')),
                 'quiet': True,
                 'no_warnings': True,
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': self.audio_format,
-                    'preferredquality': '320' if self.audio_quality == 'high' else '192',
-                }]
+                'writethumbnail': True,
+                'postprocessors': [
+                    {
+                        'key': 'FFmpegExtractAudio',
+                        'preferredcodec': self.audio_format,
+                        'preferredquality': '320' if self.audio_quality == 'high' else '192',
+                    },
+                    {
+                        'key': 'FFmpegMetadata',
+                        'add_metadata': True,
+                    },
+                    {
+                        'key': 'EmbedThumbnail',
+                        'already_have_thumbnail': False,
+                    },
+                ]
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -294,11 +305,22 @@ class SpotifyDownloader:
                             'outtmpl': str(output_file.with_suffix('.%(ext)s')),
                             'quiet': True,
                             'no_warnings': True,
-                            'postprocessors': [{
-                                'key': 'FFmpegExtractAudio',
-                                'preferredcodec': self.audio_format,
-                                'preferredquality': '320' if self.audio_quality == 'high' else '192',
-                            }]
+                            'writethumbnail': True,
+                            'postprocessors': [
+                                {
+                                    'key': 'FFmpegExtractAudio',
+                                    'preferredcodec': self.audio_format,
+                                    'preferredquality': '320' if self.audio_quality == 'high' else '192',
+                                },
+                                {
+                                    'key': 'FFmpegMetadata',
+                                    'add_metadata': True,
+                                },
+                                {
+                                    'key': 'EmbedThumbnail',
+                                    'already_have_thumbnail': False,
+                                },
+                            ]
                         }
 
                         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
