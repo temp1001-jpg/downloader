@@ -30,6 +30,13 @@ class MainWindow(ctk.CTk):
         # Apply saved theme
         ctk.set_appearance_mode(self.config.get("theme", "dark"))
 
+        # Load Spotify credentials from config into environment
+        import os
+        if self.config.get("spotify_client_id"):
+            os.environ["SPOTIFY_CLIENT_ID"] = self.config["spotify_client_id"]
+        if self.config.get("spotify_client_secret"):
+            os.environ["SPOTIFY_CLIENT_SECRET"] = self.config["spotify_client_secret"]
+
         # Initialize cookie manager
         self.cookie_manager = CookieManager()
 
