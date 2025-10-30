@@ -113,6 +113,7 @@ class MainWindow(ctk.CTk):
         )
         self.panels["spotify"] = SpotifyPanel(
             self.content_frame,
+            self.cookie_manager,
             self.config
         )
         self.panels["instagram"] = InstagramPanel(
