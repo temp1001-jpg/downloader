@@ -173,8 +173,9 @@ class SoundCloudPanel(ctk.CTkFrame):
                 self.after(0, lambda: self.update_status("Download failed", error=True))
 
         except Exception as e:
-            self.after(0, lambda: self.update_status(f"Error: {str(e)}", error=True))
-            self.after(0, lambda: self.info_text.insert("end", f"\nError: {str(e)}\n"))
+            error_msg = str(e)
+            self.after(0, lambda: self.update_status(f"Error: {error_msg}", error=True))
+            self.after(0, lambda: self.info_text.insert("end", f"\nError: {error_msg}\n"))
 
         finally:
             # Re-enable UI
