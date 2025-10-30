@@ -40,7 +40,7 @@ class SpotifyDownloader:
 
     def __init__(self, output_dir: str = "downloads", client_id: str = None,
                  client_secret: str = None, audio_format: str = "mp3",
-                 audio_quality: str = "high"):
+                 audio_quality: str = "high", cookies=None):
         """
         Initialize Spotify downloader
 
@@ -50,11 +50,13 @@ class SpotifyDownloader:
             client_secret: Spotify API client secret
             audio_format: Audio format (mp3 or flac)
             audio_quality: Audio quality (low, medium, high)
+            cookies: Cookie file path from cookie_manager
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
         self.audio_format = audio_format
         self.audio_quality = audio_quality
+        self.cookies_file = cookies
 
         # Hardcoded path to spotify/.env file
         spotify_env_path = Path(__file__).parent.parent / 'spotify' / '.env'
