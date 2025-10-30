@@ -819,3 +819,244 @@ class MainWindow(ctk.CTk):
                 json.dump(self.config, f, indent=2)
         except Exception as e:
             print(f"Warning: Could not save config: {e}")
+class SettingsDialog(ctk.CTkToplevel):
+    """Settings dialog window"""
+
+    def __init__(self, parent, config, cookie_manager):
+        super().__init__(parent)
+
+        self.config = config
+        self.cookie_manager = cookie_manager
+        self.title("Settings")
+        self.geometry("650x700")
+        self.resizable(False, False)
+
+        # Make dialog modal
+        self.transient(parent)
+        self.grab_set()
+
+        # Create scrollable frame for settings
+        self.scrollable_frame = ctk.CTkScrollableFrame(self, width=600, height=650)
+        self.scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Create widgets
+        self.create_widgets()
+
+    def create_widgets(self):
+        """Create settings widgets"""
+        parent = self.scrollable_frame
+
+        # ===== GENERAL SETTINGS =====
+        general_header = ctk.CTkLabel(
+            parent,
+            text="⚙️ General Settings",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        general_header.pack(pady=(10, 10), padx=20, anchor="w")
+
+        # Download Directory
+        dir_label = ctk.CTkLabel(parent, text="Download Directory:")
+        dir_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        dir_frame = ctk.CTkFrame(parent)
+        dir_frame.pack(pady=5, padx=20, fill="x")
+
+        self.dir_entry = ctk.CTkEntry(dir_frame, width=450)
+        self.dir_entry.insert(0, self.config.get("download_directory", "./downloads"))
+        self.dir_entry.pack(side="left", padx=5, pady=5)
+
+        browse_btn = ctk.CTkButton(dir_frame, text="Browse", width=80, command=self.browse_directory)
+        browse_btn.pack(side="left", padx=5, pady=5)
+
+        # Theme
+        theme_label = ctk.CTkLabel(parent, text="Theme:")
+        theme_label.pack(pady=(15, 5), padx=20, anchor="w")
+
+        self.theme_var = ctk.StringVar(value=self.config.get("theme", "dark"))
+        theme_menu = ctk.CTkOptionMenu(
+            parent,
+            values=["dark", "light"],
+            variable=self.theme_var,
+            width=200
+        )
+        theme_menu.pack(pady=5, padx=20, anchor="w")
+
+        # Theme change warning
+        theme_warning = ctk.CTkLabel(
+            parent,
+            text="⚠️ Restart app after saving to apply theme",
+            font=ctk.CTkFont(size=11),
+            text_color="orange"
+        )
+        theme_warning.pack(pady=5, padx=20, anchor="w")
+
+        # Separator
+        ctk.CTkFrame(parent, height=2).pack(pady=20, padx=20, fill="x")
+
+        # ===== SPOTIFY CREDENTIALS =====
+        spotify_header = ctk.CTkLabel(
+            parent,
+            text="🎵 Spotify API Credentials",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        spotify_header.pack(pady=(10, 5), padx=20, anchor="w")
+
+        # Instructions
+        spotify_instructions = ctk.CTkLabel(
+            parent,
+            text="1. Go to https://developer.spotify.com/dashboard\n"
+                 "2. Create an app (or use existing one)\n"
+                 "3. Copy your Client ID and Client Secret\n"
+                 "4. Paste them below:",
+            font=ctk.CTkFont(size=11),
+            text_color="gray",
+            justify="left"
+        )
+        spotify_instructions.pack(pady=5, padx=20, anchor="w")
+
+        # Spotify Client ID
+        client_id_label = ctk.CTkLabel(parent, text="Spotify Client ID:")
+        client_id_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        self.spotify_client_id_entry = ctk.CTkEntry(parent, width=550, placeholder_text="Enter your Spotify Client ID")
+        self.spotify_client_id_entry.insert(0, self.config.get("spotify_client_id", ""))
+        self.spotify_client_id_entry.pack(pady=5, padx=20, anchor="w")
+
+        # Spotify Client Secret
+        client_secret_label = ctk.CTkLabel(parent, text="Spotify Client Secret:")
+        client_secret_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        self.spotify_client_secret_entry = ctk.CTkEntry(parent, width=550, placeholder_text="Enter your Spotify Client Secret", show="*")
+        self.spotify_client_secret_entry.insert(0, self.config.get("spotify_client_secret", ""))
+        self.spotify_client_secret_entry.pack(pady=5, padx=20, anchor="w")
+
+        # Separator
+        ctk.CTkFrame(parent, height=2).pack(pady=20, padx=20, fill="x")
+
+        # ===== COOKIES CONFIGURATION =====
+        cookies_header = ctk.CTkLabel(
+            parent,
+            text="🍪 Cookies Configuration",
+            font=ctk.CTkFont(size=16, weight="bold")
+        )
+        cookies_header.pack(pady=(10, 5), padx=20, anchor="w")
+
+        # Instructions
+        cookies_instructions = ctk.CTkLabel(
+            parent,
+            text="For age-restricted or private content, you need browser cookies:\n\n"
+                 "Option 1: Automatic (Recommended)\n"
+                 "  - Close all browsers completely\n"
+                 "  - Open this app - it will auto-detect cookies\n\n"
+                 "Option 2: Manual (If automatic fails)\n"
+                 "  1. Install browser extension: 'Get cookies.txt LOCALLY'\n"
+                 "  2. Go to youtube.com, instagram.com, or soundcloud.com\n"
+                 "  3. Click extension and export cookies\n"
+                 "  4. Save as 'cookies.txt' in app folder or enter path below:",
+            font=ctk.CTkFont(size=11),
+            text_color="gray",
+            justify="left"
+        )
+        cookies_instructions.pack(pady=5, padx=20, anchor="w")
+
+        # Cookies file path
+        cookies_label = ctk.CTkLabel(parent, text="Cookies File Path (optional):")
+        cookies_label.pack(pady=(10, 5), padx=20, anchor="w")
+
+        cookies_frame = ctk.CTkFrame(parent)
+        cookies_frame.pack(pady=5, padx=20, fill="x")
+
+        self.cookies_entry = ctk.CTkEntry(cookies_frame, width=450, placeholder_text="cookies.txt")
+        self.cookies_entry.insert(0, self.config.get("cookies_file", ""))
+        self.cookies_entry.pack(side="left", padx=5, pady=5)
+
+        browse_cookies_btn = ctk.CTkButton(cookies_frame, text="Browse", width=80, command=self.browse_cookies)
+        browse_cookies_btn.pack(side="left", padx=5, pady=5)
+
+        # Cookie status
+        cookie_status = "✓ Cookies loaded" if self.cookie_manager.has_cookies() else "⚠️ No cookies detected"
+        self.cookie_status_label = ctk.CTkLabel(
+            parent,
+            text=cookie_status,
+            font=ctk.CTkFont(size=11),
+            text_color="green" if self.cookie_manager.has_cookies() else "orange"
+        )
+        self.cookie_status_label.pack(pady=5, padx=20, anchor="w")
+
+        # Spacer
+        ctk.CTkLabel(parent, text="").pack(pady=20)
+
+        # ===== BUTTONS =====
+        btn_frame = ctk.CTkFrame(self)
+        btn_frame.pack(pady=10, side="bottom")
+
+        save_btn = ctk.CTkButton(btn_frame, text="Save Settings", command=self.save_settings, width=120)
+        save_btn.pack(side="left", padx=10)
+
+        cancel_btn = ctk.CTkButton(btn_frame, text="Cancel", command=self.destroy, width=120)
+        cancel_btn.pack(side="left", padx=10)
+
+    def browse_directory(self):
+        """Browse for download directory"""
+        from tkinter import filedialog
+        directory = filedialog.askdirectory(initialdir=self.dir_entry.get())
+        if directory:
+            self.dir_entry.delete(0, "end")
+            self.dir_entry.insert(0, directory)
+
+    def browse_cookies(self):
+        """Browse for cookies file"""
+        from tkinter import filedialog
+        filename = filedialog.askopenfilename(
+            initialdir=".",
+            title="Select Cookies File",
+            filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
+        )
+        if filename:
+            self.cookies_entry.delete(0, "end")
+            self.cookies_entry.insert(0, filename)
+
+    def save_settings(self):
+        """Save settings and close dialog"""
+        old_theme = self.config.get("theme", "dark")
+        new_theme = self.theme_var.get()
+
+        # Save all settings
+        self.config["download_directory"] = self.dir_entry.get()
+        self.config["theme"] = new_theme
+        self.config["spotify_client_id"] = self.spotify_client_id_entry.get().strip()
+        self.config["spotify_client_secret"] = self.spotify_client_secret_entry.get().strip()
+        self.config["cookies_file"] = self.cookies_entry.get().strip()
+
+        # Update environment variables for Spotify
+        import os
+        if self.config["spotify_client_id"]:
+            os.environ["SPOTIFY_CLIENT_ID"] = self.config["spotify_client_id"]
+        if self.config["spotify_client_secret"]:
+            os.environ["SPOTIFY_CLIENT_SECRET"] = self.config["spotify_client_secret"]
+
+        # Update cookie manager if cookies file specified
+        if self.config["cookies_file"]:
+            cookies_path = Path(self.config["cookies_file"])
+            if cookies_path.exists():
+                try:
+                    from http.cookiejar import MozillaCookieJar
+                    jar = MozillaCookieJar(str(cookies_path))
+                    jar.load(ignore_discard=True, ignore_expires=True)
+                    self.cookie_manager.cookie_jar = jar
+                    self.cookie_manager._organize_cookies()
+                    print(f"✓ Loaded cookies from: {cookies_path}")
+                except Exception as e:
+                    print(f"Warning: Could not load cookies: {e}")
+
+        # Show restart message if theme changed
+        if old_theme != new_theme:
+            print("\n" + "="*60)
+            print("⚠️  THEME CHANGED")
+            print("="*60)
+            print(f"Theme changed from '{old_theme}' to '{new_theme}'")
+            print("\n👉 Please CLOSE and RESTART the app to see the new theme!")
+            print("="*60 + "\n")
+
+        print("\n✓ Settings saved successfully!\n")
+        self.destroy()
