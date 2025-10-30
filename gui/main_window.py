@@ -379,13 +379,50 @@ class SettingsDialog(ctk.CTkToplevel):
             self.dir_entry.delete(0, "end")
             self.dir_entry.insert(0, directory)
 
+    def browse_cookies(self):
+        """Browse for cookies file"""
+        from tkinter import filedialog
+        filename = filedialog.askopenfilename(
+            initialdir=".",
+            title="Select Cookies File",
+            filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
+        )
+        if filename:
+            self.cookies_entry.delete(0, "end")
+            self.cookies_entry.insert(0, filename)
+
     def save_settings(self):
         """Save settings and close dialog"""
         old_theme = self.config.get("theme", "dark")
         new_theme = self.theme_var.get()
 
+        # Save all settings
         self.config["download_directory"] = self.dir_entry.get()
         self.config["theme"] = new_theme
+        self.config["spotify_client_id"] = self.spotify_client_id_entry.get().strip()
+        self.config["spotify_client_secret"] = self.spotify_client_secret_entry.get().strip()
+        self.config["cookies_file"] = self.cookies_entry.get().strip()
+
+        # Update environment variables for Spotify
+        import os
+        if self.config["spotify_client_id"]:
+            os.environ["SPOTIFY_CLIENT_ID"] = self.config["spotify_client_id"]
+        if self.config["spotify_client_secret"]:
+            os.environ["SPOTIFY_CLIENT_SECRET"] = self.config["spotify_client_secret"]
+
+        # Update cookie manager if cookies file specified
+        if self.config["cookies_file"]:
+            cookies_path = Path(self.config["cookies_file"])
+            if cookies_path.exists():
+                try:
+                    from http.cookiejar import MozillaCookieJar
+                    jar = MozillaCookieJar(str(cookies_path))
+                    jar.load(ignore_discard=True, ignore_expires=True)
+                    self.cookie_manager.cookie_jar = jar
+                    self.cookie_manager._organize_cookies()
+                    print(f"✓ Loaded cookies from: {cookies_path}")
+                except Exception as e:
+                    print(f"Warning: Could not load cookies: {e}")
 
         # Show restart message if theme changed
         if old_theme != new_theme:
@@ -396,4 +433,5 @@ class SettingsDialog(ctk.CTkToplevel):
             print("\n👉 Please CLOSE and RESTART the app to see the new theme!")
             print("="*60 + "\n")
 
+        print("\n✓ Settings saved successfully!\n")
         self.destroy()
