@@ -222,7 +222,7 @@ class InstagramPanel(ctk.CTkFrame):
 
         finally:
             # Re-enable UI
-            self.after(0, lambda: self.download_btn.configure(state="disabled"))
+            self.after(0, lambda: self.download_btn.configure(state="normal"))
             self.after(0, lambda: self.url_entry.configure(state="normal"))
             self.downloading = False
 
