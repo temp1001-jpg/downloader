@@ -252,10 +252,18 @@ class SettingsDialog(ctk.CTkToplevel):
         theme_menu = ctk.CTkOptionMenu(
             self,
             values=["dark", "light"],
-            variable=self.theme_var,
-            command=self.change_theme
+            variable=self.theme_var
         )
         theme_menu.pack(pady=5, padx=20, anchor="w")
+
+        # Theme change warning
+        theme_warning = ctk.CTkLabel(
+            self,
+            text="Note: Restart app after saving to apply theme",
+            font=ctk.CTkFont(size=11),
+            text_color="gray"
+        )
+        theme_warning.pack(pady=5, padx=20, anchor="w")
 
         # Spacer
         ctk.CTkLabel(self, text="").pack(pady=20)
@@ -278,12 +286,21 @@ class SettingsDialog(ctk.CTkToplevel):
             self.dir_entry.delete(0, "end")
             self.dir_entry.insert(0, directory)
 
-    def change_theme(self, theme):
-        """Change application theme"""
-        ctk.set_appearance_mode(theme)
-
     def save_settings(self):
         """Save settings and close dialog"""
+        old_theme = self.config.get("theme", "dark")
+        new_theme = self.theme_var.get()
+
         self.config["download_directory"] = self.dir_entry.get()
-        self.config["theme"] = self.theme_var.get()
+        self.config["theme"] = new_theme
+
+        # Show restart message if theme changed
+        if old_theme != new_theme:
+            print("\n" + "="*60)
+            print("⚠️  THEME CHANGED")
+            print("="*60)
+            print(f"Theme changed from '{old_theme}' to '{new_theme}'")
+            print("\n👉 Please CLOSE and RESTART the app to see the new theme!")
+            print("="*60 + "\n")
+
         self.destroy()
