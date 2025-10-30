@@ -141,6 +141,13 @@ To use Spotify downloader:
             self.after(0, lambda: self.progress_bar.set(0))
             self.after(0, lambda: self.info_text.delete("1.0", "end"))
 
+            # Get cookies
+            cookies_file = None
+            try:
+                cookies_file = self.cookie_manager.cookies_to_netscape('.youtube.com')
+            except Exception as e:
+                self.after(0, lambda: self.info_text.insert("end", f"Warning: Could not load cookies: {e}\n"))
+
             # Create downloader
             download_dir = self.config.get("download_directory", "./downloads")
             audio_format = self.format_var.get().lower()
@@ -149,7 +156,8 @@ To use Spotify downloader:
             self.downloader = SpotifyDownloader(
                 output_dir=download_dir,
                 audio_format=audio_format,
-                audio_quality=audio_quality
+                audio_quality=audio_quality,
+                cookies=cookies_file
             )
 
             # Progress callback
