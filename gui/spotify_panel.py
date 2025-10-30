@@ -12,9 +12,10 @@ from core.spotify_downloader import SpotifyDownloader
 class SpotifyPanel(ctk.CTkFrame):
     """Spotify downloader panel"""
 
-    def __init__(self, parent, config):
+    def __init__(self, parent, cookie_manager, config):
         super().__init__(parent)
 
+        self.cookie_manager = cookie_manager
         self.config = config
         self.downloader = None
         self.downloading = False
