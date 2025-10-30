@@ -20,9 +20,9 @@ class MainWindow(ctk.CTk):
         super().__init__()
 
         # Window configuration
-        self.title("All-in-One Media Downloader")
-        self.geometry("900x600")
-        self.minsize(800, 500)
+        self.title("Blify - All-in-One Media Downloader")
+        self.geometry("1200x700")
+        self.minsize(1000, 600)
 
         # Load configuration
         self.config = self.load_config()
