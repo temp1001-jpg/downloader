@@ -238,15 +238,21 @@ class MainWindow(ctk.CTk):
         # Hide current panel
         if self.current_panel:
             self.panels[self.current_panel].grid_remove()
-            # Reset previous button color
-            self.buttons[self.current_panel].configure(fg_color=["#3B8ED0", "#1F6AA5"])
+            # Reset previous button color to default
+            self.buttons[self.current_panel].configure(
+                fg_color=("#FFFFFF", "#2A2A2A"),
+                text_color=("#2F9E9C", "#34D399")
+            )
 
         # Show new panel
         self.panels[panel_name].grid()
         self.current_panel = panel_name
 
-        # Highlight active button
-        self.buttons[panel_name].configure(fg_color=["#2B7FC5", "#144870"])
+        # Highlight active button with accent color
+        self.buttons[panel_name].configure(
+            fg_color=("#2F9E9C", "#1A5F5E"),
+            text_color="white"
+        )
 
     def open_settings(self):
         """Open settings dialog"""
