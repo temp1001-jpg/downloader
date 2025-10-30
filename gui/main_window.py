@@ -141,7 +141,10 @@ class MainWindow(ctk.CTk):
         default_config = {
             "download_directory": "./downloads",
             "theme": "dark",
-            "color_scheme": "blue"
+            "color_scheme": "blue",
+            "spotify_client_id": "",
+            "spotify_client_secret": "",
+            "cookies_file": ""
         }
 
         try:
