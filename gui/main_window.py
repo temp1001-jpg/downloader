@@ -185,17 +185,9 @@ class MainWindow(ctk.CTk):
 
     def open_settings(self):
         """Open settings dialog"""
-        dialog = SettingsDialog(self, self.config)
+        dialog = SettingsDialog(self, self.config, self.cookie_manager)
         dialog.wait_window()
         self.save_config()
-
-    def refresh_cookies(self):
-        """Manually refresh browser cookies"""
-        success = self.cookie_manager.refresh_cookies()
-        if success:
-            self.show_message("Cookies refreshed successfully!")
-        else:
-            self.show_message("Failed to refresh cookies. No browsers found.", error=True)
 
     def show_message(self, message, error=False):
         """Show temporary message (could be improved with custom dialog)"""
