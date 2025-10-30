@@ -41,26 +41,47 @@ class CookieManager:
             ('Safari', browser_cookie3.safari),
         ]
 
+        errors_found = []
+
         for browser_name, browser_func in browsers:
             try:
-                print(f"Trying to load cookies from {browser_name}...")
                 jar = browser_func()
                 if jar and list(jar):  # Check if jar has cookies
                     self.cookie_jar = jar
                     self._organize_cookies()
-                    print(f"✓ Successfully loaded {len(list(jar))} cookies from {browser_name}")
+                    print(f"\n✓ Successfully loaded {len(list(jar))} cookies from {browser_name}!")
                     return
             except (PermissionError, OSError) as e:
-                print(f"  {browser_name}: Permission denied (browser may be running)")
+                errors_found.append(f"{browser_name}: Locked (browser running)")
                 continue
             except AttributeError:
                 # Browser not installed
                 continue
             except Exception as e:
-                print(f"  {browser_name}: {type(e).__name__}")
+                error_name = type(e).__name__
+                if "BrowserCookieError" in error_name:
+                    errors_found.append(f"{browser_name}: Database encrypted or locked")
+                else:
+                    errors_found.append(f"{browser_name}: {error_name}")
                 continue
 
-        print("Note: No cookies loaded. Public content will still work.")
+        # No cookies loaded
+        print("\n" + "="*60)
+        print("⚠️  COOKIE LOADING FAILED")
+        print("="*60)
+        print("\nTo fix this, try these steps:")
+        print("1. CLOSE Opera GX and Chrome completely")
+        print("2. Click 'Refresh Cookies' button in the app")
+        print("\nIf that doesn't work:")
+        print("3. Manually export cookies using a browser extension")
+        print("   - Install 'Get cookies.txt' extension")
+        print("   - Export cookies from youtube.com")
+        print("   - Save as 'youtube/cookies.txt'")
+        print("\n⚠️  Without cookies:")
+        print("   - Public videos: ✓ Will work")
+        print("   - Age-restricted: ✗ Won't work")
+        print("   - Private videos: ✗ Won't work")
+        print("="*60 + "\n")
 
     def _organize_cookies(self):
         """Organize cookies by domain for quick access"""
